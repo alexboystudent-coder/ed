@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kezdő Izomépítő Edzésterv - CyberWorkout</title>
+    <link rel="stylesheet" href="c.css">
+</head>
+<body>
+
+<div class="main-wrapper">
+    <!-- Felső Bár -->
+    <div class="top-bar">
+        <a href="index.html" class="back-btn">← Főmenü</a>
+        <div class="streak-counter">💪 BEGINNER HYPERTROPHY</div>
+    </div>
+
+    <!-- Dátum / Navigáció -->
+    <div class="calendar-nav">
+        <button type="button" class="nav-btn" id="prev-day">← Előző</button>
+        <span class="date-label" id="current-day-label">HÉTFŐ: PUSH + BICEPSZ</span>
+        <button type="button" class="nav-btn" id="next-day">Következő →</button>
+    </div>
+
+    <!-- BEÉPÍTETT STOPPER ÁLLÍTHATÓ IDŐVEL -->
+    <div class="inline-timer-card">
+        <div class="timer-title">⏱️ PIHENŐIDŐ STOPPER</div>
+        <div class="timer-display" id="rest-timer-count">01:30</div>
+        
+        <!-- GYORS IDŐBEÁLLÍTÓ GOMBOK -->
+        <div class="quick-time-buttons">
+            <button type="button" class="quick-btn" onclick="setPresetTime(60)">60 mp</button>
+            <button type="button" class="quick-btn" onclick="setPresetTime(90)">90 mp</button>
+            <button type="button" class="quick-btn" onclick="setPresetTime(120)">120 mp</button>
+        </div>
+
+        <div class="slider-container">
+            <input type="range" id="timer-slider" min="15" max="300" step="15" value="90">
+            <span class="slider-label"><span id="slider-val-label">90</span> mp</span>
+        </div>
+
+        <div class="timer-controls">
+            <button type="button" class="timer-btn primary" id="start-timer-btn">▶ INDÍTÁS</button>
+            <button type="button" class="timer-btn" id="reset-timer-btn">↺ ALAPHELYZET</button>
+        </div>
+    </div>
+
+    <!-- Fő Kártya -->
+    <div class="cloud-card" id="workout-card">
+        <h2>🔥 3 NAPOS PROGRAM</h2>
+        
+        <ul class="task-list" id="task-container">
+            <!-- JS tölti fel -->
+        </ul>
+    </div>
+</div>
+
+<!-- BAL ALSÓ FÜZET IKON ÉS Q&A JEGYZET MODAL -->
+<button type="button" id="notes-toggle-btn" title="Kezdő Q&A / Jegyzetek">📓</button>
+
+<div class="modal-overlay" id="notes-modal" style="display: none;">
+    <div class="mini-modal-card notes-card">
+        <h3>📓 Kezdő Tudásbázis & Jegyzetek</h3>
+        <textarea id="notes-input" placeholder="Írd ide a saját tapasztalataidat..."></textarea>
+        <div class="modal-buttons-right">
+            <button type="button" class="nav-btn primary-btn" id="save-notes-btn">Mentés</button>
+            <button type="button" class="nav-btn" id="close-notes-btn">Bezárás</button>
+        </div>
+    </div>
+</div>
+
+<script src="j.js"></script>
+</body>
+</html>
