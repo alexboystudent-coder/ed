@@ -1,4 +1,4 @@
-document.addEventListener("DOMContentLoaded", () => {
+Document.addEventListener("DOMContentLoaded", () => {
     const schedule = {
         0: {
             title: "💥 HÉTFŐ: PUSH + BICEPSZ",
@@ -68,7 +68,43 @@ PROFI VÁLASZ: Ha az adott súllyal eléred a felső határt minden sorozatban, 
     const saveNotesBtn = document.getElementById("save-notes-btn");
     const closeNotesBtn = document.getElementById("close-notes-btn");
 
-    let savedData = JSON.parse(localStorage.getItem("friend_workout_data")) || {};
+    // --- ÚJ HÉT / DÁTUM ALAPÚ LOGIKA ---
+    function getWeekNumber(d) {
+        d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+        d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay() || 7));
+        var yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+        var weekNo = Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
+        return `${d.getUTCFullYear()}-W${weekNo}`;
+    }
+
+    const currentWeekStr = getWeekNumber(new Date());
+    let storedStorage = JSON.parse(localStorage.getItem("friend_workout_data")) || {};
+    
+    // Ellenőrizzük, hogy elmentettük-e már a mostani hetet
+    let savedData = {};
+    if (storedStorage.week === currentWeekStr) {
+        savedData = storedStorage.data || {};
+    } else {
+        // Ha új hét van, átmentjük a korábbi súlyokat, de a pipákat (done) töröljük!
+        const oldData = storedStorage.data || {};
+        savedData = {};
+        for (let key in oldData) {
+            savedData[key] = {
+                weight: oldData[key].weight, // Súly megmarad
+                done: false // Pipák törlődnek az új héten
+            };
+        }
+        saveDataToStorage();
+    }
+
+    function saveDataToStorage() {
+        const payload = {
+            week: currentWeekStr,
+            data: savedData
+        };
+        localStorage.setItem("friend_workout_data", JSON.stringify(payload));
+    }
+    // ------------------------------------
 
     function renderDay(index) {
         const dayData = schedule[index];
@@ -118,7 +154,7 @@ PROFI VÁLASZ: Ha az adott súllyal eléred a felső határt minden sorozatban, 
         let currentWeight = parseFloat(savedData[id].weight) || 0;
         let newWeight = Math.max(0, currentWeight + delta);
         savedData[id].weight = Math.round(newWeight * 10) / 10;
-        localStorage.setItem("friend_workout_data", JSON.stringify(savedData));
+        saveDataToStorage();
         renderDay(dayIdx);
     };
 
@@ -154,7 +190,6 @@ PROFI VÁLASZ: Ha az adott súllyal eléred a felső határt minden sorozatban, 
         }, 1000);
     }
 
-    // Csúszka mozgatásakor az idő azonnal frissül
     timerSlider.addEventListener("input", (e) => {
         const newVal = parseInt(e.target.value, 10);
         sliderValLabel.innerText = newVal;
@@ -163,7 +198,6 @@ PROFI VÁLASZ: Ha az adott súllyal eléred a felső határt minden sorozatban, 
         updateDisplay();
     });
 
-    // Gyors gombok segítségével történő időállítás
     window.setPresetTime = (sec) => {
         stopTimer();
         timerSlider.value = sec;
@@ -212,7 +246,7 @@ PROFI VÁLASZ: Ha az adott súllyal eléred a felső határt minden sorozatban, 
         if (!savedData[id]) savedData[id] = {};
         const isNowDone = !savedData[id].done;
         savedData[id].done = isNowDone;
-        localStorage.setItem("friend_workout_data", JSON.stringify(savedData));
+        saveDataToStorage();
         
         renderDay(dayIdx);
 
