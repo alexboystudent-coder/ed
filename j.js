@@ -1,4 +1,4 @@
-Document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", () => {
     const schedule = {
         0: {
             title: "💥 HÉTFŐ: PUSH + BICEPSZ",
