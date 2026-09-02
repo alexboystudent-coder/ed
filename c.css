@@ -258,46 +258,6 @@ body::before {
     color: var(--text-secondary);
 }
 
-/* SÚLY GOMBOK */
-.weight-control-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    background: rgba(15, 23, 42, 0.6);
-    padding: 6px 12px;
-    border-radius: 8px;
-}
-
-.weight-label {
-    font-size: 0.8rem;
-    color: var(--text-secondary);
-}
-
-.weight-picker {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-}
-
-.weight-btn {
-    background: rgba(30, 41, 59, 0.9);
-    border: 1px solid var(--border-color);
-    color: var(--accent-cyan);
-    font-weight: 700;
-    font-size: 0.75rem;
-    padding: 4px 6px;
-    border-radius: 6px;
-    cursor: pointer;
-}
-
-.weight-display-val {
-    font-size: 0.9rem;
-    font-weight: 800;
-    color: var(--accent-cyan);
-    min-width: 50px;
-    text-align: center;
-}
-
 .checkbox-btn {
     background: rgba(15, 23, 42, 0.8);
     color: var(--text-primary);
@@ -333,6 +293,78 @@ body::before {
     font-size: 0.8rem;
     border-left: 3px solid var(--accent-blue);
     color: var(--text-secondary);
+}
+
+/* KÖNYVECSKE / GYAKORLAT NAPLÓ MODAL STÍLUSOK */
+#exercise-logs-container {
+    max-height: 320px;
+    overflow-y: auto;
+    text-align: left;
+    color: var(--text-primary);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding-right: 4px;
+}
+
+#exercise-logs-container h4 {
+    font-size: 0.9rem;
+    font-weight: 800;
+    color: var(--accent-cyan);
+    margin-bottom: 4px;
+}
+
+.exercise-log-card {
+    background: rgba(30, 41, 59, 0.7);
+    border: 1px solid var(--border-color);
+    padding: 10px 12px;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.exercise-log-title {
+    font-weight: 700;
+    font-size: 0.85rem;
+    color: var(--text-primary);
+}
+
+.exercise-log-inputs {
+    display: flex;
+    gap: 12px;
+}
+
+.exercise-log-field {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    flex: 1;
+}
+
+.exercise-log-field label {
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.exercise-log-field input {
+    width: 100%;
+    background: rgba(15, 23, 42, 0.9);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    color: var(--accent-cyan);
+    padding: 6px 10px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.exercise-log-field input:focus {
+    border-color: var(--accent-blue);
 }
 
 /* CSÚSZKA STÍLUS */
