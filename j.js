@@ -1,49 +1,112 @@
 document.addEventListener("DOMContentLoaded", () => {
-    const schedule = {
-        0: {
-            title: "💥 HÉTFŐ: PUSH + BICEPSZ",
-            tasks: [
-                { id: "p1_incline_bench", text: "🏋️ Döntött pados fekvenyomás", desc: "2x12 ismétlés.", hasWeight: true },
-                { id: "p1_bench_backoff", text: "🏋️ Fekvenyomás (Backoff)", desc: "1x10 ismétlés (könnyebb súllyal).", hasWeight: true },
-                { id: "p1_overhead_press", text: "🏋️ Vállból nyomás", desc: "2x8 ismétlés.", hasWeight: true },
-                { id: "p1_lat_raise", text: "⚡ Oldalemelés", desc: "3x10 ismétlés.", hasWeight: true },
-                { id: "p1_biceps_curl", text: "💪 Bicepszezés", desc: "2-3x11 ismétlés.", hasWeight: true }
-            ]
-        },
-        1: { title: "🧘 KEDD: PIHENŐNAP", tasks: [{ id: "rest_tue", text: "☕ Regeneráció", desc: "Nyújtás, pihenés.", hasWeight: false }] },
-        2: {
-            title: "💥 SZERDA: PULL + TRICEPSZ",
-            tasks: [
-                { id: "p2_pullup_choice", text: "🏋️ Húzódzkodás (Negatív/Asszisztált)", desc: "3x4-6 ismétlés.", hasWeight: false },
-                { id: "p2_rowing", text: "🏋️ Evezés", desc: "2x10 ismétlés.", hasWeight: true },
-                { id: "p2_rev_plank", text: "🛡️ Reverse Plank Hold", desc: "2 sorozat megtartás.", hasWeight: false },
-                { id: "p2_tri_overhead", text: "⚡ Fej feletti tricepsz nyújtás", desc: "2x12 ismétlés.", hasWeight: true }
-            ]
-        },
-        3: { title: "🧘 CSÜTÖRTÖK: PIHENŐNAP", tasks: [{ id: "rest_thu", text: "☕ Regeneráció", desc: "Izmok pihentetése.", hasWeight: false }] },
-        4: {
-            title: "💥 PÉNTEK: FELSŐ NAP",
-            tasks: [
-                { id: "p3_bench", text: "🏋️ Fekvenyomás", desc: "3x7 ismétlés.", hasWeight: true },
-                { id: "p3_pullup_choice", text: "🏋️ Húzódzkodás", desc: "3x4-6 ismétlés.", hasWeight: false },
-                { id: "p3_deadlift", text: "🏋️ Felhúzás / Evezés", desc: "3x10 ismétlés.", hasWeight: true },
-                { id: "p3_vsit", text: "🛡️ V-Sit Hold", desc: "2 sorozat.", hasWeight: false },
-                { id: "p3_pushup_cooldown", text: "⚡ Levezető: Fekvőtámasz", desc: "1-2 sorozat bukásig.", hasWeight: false }
-            ]
-        },
-        5: { title: "🧘 SZOMBAT: PIHENŐNAP", tasks: [{ id: "rest_sat", text: "☕ Pihenés", desc: "Hétvégi feltöltődés.", hasWeight: false }] },
-        6: { title: "🧘 VASÁRNAP: PIHENŐNAP", tasks: [{ id: "rest_sun", text: "☕ Pihenés", desc: "Felkészülés az új hétre.", hasWeight: false }] }
-    };
+    function generateDynamicSchedule() {
+        const today = new Date();
+        const daysOfWeek = [
+            "VASÁRNAP", "HÉTFŐ", "KEDD", "SZERDA", "CSÜTÖRTÖK", "PÉNTEK", "SZOMBAT"
+        ];
+        
+        const workoutTypes = [
+            {
+                typeId: "push",
+                title: "PUSH + BICEPSZ",
+                tasks: [
+                    { id: "incline_bench", text: "🏋️ Döntött pados fekvenyomás", desc: "2x12 ismétlés." },
+                    { id: "bench_backoff", text: "🏋️ Fekvenyomás (Backoff)", desc: "1x10 ismétlés (könnyebb súllyal)." },
+                    { id: "overhead_press", text: "🏋️ Vállból nyomás", desc: "2x8 ismétlés." },
+                    { id: "lat_raise", text: "⚡ Oldalemelés", desc: "3x10 ismétlés." },
+                    { id: "biceps_curl", text: "💪 Bicepszezés", desc: "2-3x11 ismétlés." }
+                ]
+            },
+            {
+                typeId: "pull",
+                title: "PULL + TRICEPSZ",
+                tasks: [
+                    { id: "pullup_choice", text: "🏋️ Húzódzkodás (Negatív/Asszisztált)", desc: "3x4-6 ismétlés." },
+                    { id: "rowing", text: "🏋️ Evezés", desc: "2x10 ismétlés." },
+                    { id: "rev_plank", text: "🛡️ Reverse Plank Hold", desc: "2 sorozat megtartás." },
+                    { id: "tri_overhead", text: "⚡ Fej feletti tricepsz nyújtás", desc: "2x12 ismétlés." }
+                ]
+            },
+            {
+                typeId: "upper",
+                title: "FELSŐ NAP",
+                tasks: [
+                    { id: "bench", text: "🏋️ Fekvenyomás", desc: "3x7 ismétlés." },
+                    { id: "pullup_choice", text: "🏋️ Húzódzkodás", desc: "3x4-6 ismétlés." },
+                    { id: "deadlift", text: "🏋️ Felhúzás / Evezés", desc: "3x10 ismétlés." },
+                    { id: "vsit", text: "🛡️ V-Sit Hold", desc: "2 sorozat." },
+                    { id: "pushup_cooldown", text: "⚡ Levezető: Fekvőtámasz", desc: "1-2 sorozat bukásig." }
+                ]
+            }
+        ];
 
-    const defaultQA = 
-`❓ 1. KÉRDÉS: Milyen súllyal kezdjem az edzést?
-PROFI VÁLASZ: Olyan súlyt válassz, amivel az előírt ismétlésszámot szabályosan meg tudod csinálni, és az utolsó 2 ismétlés már nehéz.
+        const schedule = {};
+        const baseDate = new Date(2026, 0, 1);
+        const totalDaysToGenerate = 730;
 
-❓ 2. KÉRDÉS: Mennyi pihenőt tartsak a sorozatok között?
-PROFI VÁLASZ: Összetett gyakorlatoknál 90-120 mp, kisebb izolációs gyakorlatoknál 60-90 mp.
+        for (let i = 0; i < totalDaysToGenerate; i++) {
+            const currentDate = new Date(today);
+            currentDate.setDate(today.getDate() + i);
+            
+            const dayName = daysOfWeek[currentDate.getDay()];
+            const year = currentDate.getFullYear();
+            const month = String(currentDate.getMonth() + 1).padStart(2, '0');
+            const day = String(currentDate.getDate()).padStart(2, '0');
+            const dateStr = `${year}.${month}.${day}`;
 
-❓ 3. KÉRDÉS: Mikor növeljem a súlyokat?
-PROFI VÁLASZ: Ha az adott súllyal eléred a felső határt minden sorozatban, emelj 1-2.5 kg-ot!`;
+            const diffTime = currentDate - baseDate;
+            const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+
+            let activeWorkoutCounter = 0;
+            for (let d = 0; d <= diffDays; d++) {
+                if (d % 2 === 0) {
+                    if (d < diffDays) activeWorkoutCounter++;
+                }
+            }
+
+            if (diffDays % 2 === 0) {
+                const currentWorkout = workoutTypes[activeWorkoutCounter % workoutTypes.length];
+                const uniqueTasks = currentWorkout.tasks.map(task => ({
+                    ...task,
+                    uniqueId: `${dateStr}_${currentWorkout.typeId}_${task.id}`
+                }));
+
+                schedule[i] = {
+                    dateKey: dateStr,
+                    title: `💥 ${dayName} (${dateStr}): ${currentWorkout.title}`,
+                    tasks: uniqueTasks
+                };
+            } else {
+                schedule[i] = {
+                    dateKey: dateStr,
+                    title: `🧘 ${dayName} (${dateStr}): PIHENŐNAP`,
+                    tasks: [{ uniqueId: `${dateStr}_rest_${i}`, text: "☕ Regeneráció", desc: "Nyújtás, pihenés, izmok pihentetése." }]
+                };
+            }
+        }
+
+        return schedule;
+    }
+
+    const schedule = generateDynamicSchedule();
+    const totalScheduleDays = 730;
+
+    // Összes egyedi gyakorlat listája a könyvecskéhez (név: ismétlés, kg formátumhoz)
+    const allExercisesList = [
+        { id: "incline_bench", name: "Döntött pados fekvenyomás" },
+        { id: "bench_backoff", name: "Fekvenyomás (Backoff)" },
+        { id: "overhead_press", name: "Vállból nyomás" },
+        { id: "lat_raise", name: "Oldalemelés" },
+        { id: "biceps_curl", name: "Bicepszezés" },
+        { id: "pullup_choice", name: "Húzódzkodás" },
+        { id: "rowing", name: "Evezés" },
+        { id: "rev_plank", name: "Reverse Plank Hold" },
+        { id: "tri_overhead", name: "Fej feletti tricepsz nyújtás" },
+        { id: "bench", name: "Fekvenyomás" },
+        { id: "deadlift", name: "Felhúzás / Evezés" },
+        { id: "vsit", name: "V-Sit Hold" },
+        { id: "pushup_cooldown", name: "Fekvőtámasz" }
+    ];
 
     let currentDayIndex = 0;
     const label = document.getElementById("current-day-label");
@@ -51,7 +114,6 @@ PROFI VÁLASZ: Ha az adott súllyal eléred a felső határt minden sorozatban, 
     const prevBtn = document.getElementById("prev-day");
     const nextBtn = document.getElementById("next-day");
 
-    // Stopper elemek
     const timerDisplay = document.getElementById("rest-timer-count");
     const timerSlider = document.getElementById("timer-slider");
     const sliderValLabel = document.getElementById("slider-val-label");
@@ -61,50 +123,14 @@ PROFI VÁLASZ: Ha az adott súllyal eléred a felső határt minden sorozatban, 
     let timerInterval = null;
     let secondsLeft = parseInt(timerSlider.value, 10);
 
-    // Jegyzet elemek
     const notesBtn = document.getElementById("notes-toggle-btn");
     const notesModal = document.getElementById("notes-modal");
     const notesInput = document.getElementById("notes-input");
     const saveNotesBtn = document.getElementById("save-notes-btn");
     const closeNotesBtn = document.getElementById("close-notes-btn");
 
-    // --- ÚJ HÉT / DÁTUM ALAPÚ LOGIKA ---
-    function getWeekNumber(d) {
-        d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
-        d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay() || 7));
-        var yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
-        var weekNo = Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
-        return `${d.getUTCFullYear()}-W${weekNo}`;
-    }
-
-    const currentWeekStr = getWeekNumber(new Date());
-    let storedStorage = JSON.parse(localStorage.getItem("friend_workout_data")) || {};
-    
-    // Ellenőrizzük, hogy elmentettük-e már a mostani hetet
-    let savedData = {};
-    if (storedStorage.week === currentWeekStr) {
-        savedData = storedStorage.data || {};
-    } else {
-        // Ha új hét van, átmentjük a korábbi súlyokat, de a pipákat (done) töröljük!
-        const oldData = storedStorage.data || {};
-        savedData = {};
-        for (let key in oldData) {
-            savedData[key] = {
-                weight: oldData[key].weight, // Súly megmarad
-                done: false // Pipák törlődnek az új héten
-            };
-        }
-        saveDataToStorage();
-    }
-
-    function saveDataToStorage() {
-        const payload = {
-            week: currentWeekStr,
-            data: savedData
-        };
-        localStorage.setItem("friend_workout_data", JSON.stringify(payload));
-    }
-    // ------------------------------------
+    let savedData = JSON.parse(localStorage.getItem("friend_workout_data")) || {};
+    let exerciseLogs = JSON.parse(localStorage.getItem("friend_exercise_logs")) || {};
 
     function renderDay(index) {
         const dayData = schedule[index];
@@ -112,8 +138,7 @@ PROFI VÁLASZ: Ha az adott súllyal eléred a felső határt minden sorozatban, 
         container.innerHTML = "";
 
         dayData.tasks.forEach(task => {
-            const isDone = savedData[task.id]?.done || false;
-            const weightVal = savedData[task.id]?.weight !== undefined ? savedData[task.id].weight : 0;
+            const isDone = savedData[task.uniqueId]?.done || false;
 
             const li = document.createElement("li");
             li.className = `task-item ${isDone ? 'completed' : ''}`;
@@ -122,25 +147,13 @@ PROFI VÁLASZ: Ha az adott súllyal eléred a felső határt minden sorozatban, 
                 <div class="task-row-top">
                     <span class="task-text">${task.text}</span>
                     <div class="task-actions">
-                        <button type="button" class="focus-btn" onclick="toggleDesc('${task.id}')">Info</button>
-                        <button type="button" class="checkbox-btn" onclick="toggleDone('${task.id}', ${index})">
+                        <button type="button" class="focus-btn" onclick="toggleDesc('${task.uniqueId}')">Info</button>
+                        <button type="button" class="checkbox-btn" onclick="toggleDone('${task.uniqueId}', ${index})">
                             ${isDone ? '✓ Kész' : 'Kész'}
                         </button>
                     </div>
                 </div>
-                ${task.hasWeight ? `
-                    <div class="weight-control-row">
-                        <span class="weight-label">Súly:</span>
-                        <div class="weight-picker">
-                            <button type="button" class="weight-btn" onclick="adjustWeight('${task.id}', -2.5, ${index})">-2.5</button>
-                            <button type="button" class="weight-btn" onclick="adjustWeight('${task.id}', -1, ${index})">-1</button>
-                            <span class="weight-display-val">${weightVal} <small>kg</small></span>
-                            <button type="button" class="weight-btn" onclick="adjustWeight('${task.id}', 1, ${index})">+1</button>
-                            <button type="button" class="weight-btn" onclick="adjustWeight('${task.id}', 2.5, ${index})">+2.5</button>
-                        </div>
-                    </div>
-                ` : ''}
-                <div class="plan-box" id="desc-${task.id}">
+                <div class="plan-box" id="desc-${task.uniqueId}">
                     ${task.desc}
                 </div>
             `;
@@ -148,17 +161,6 @@ PROFI VÁLASZ: Ha az adott súllyal eléred a felső határt minden sorozatban, 
         });
     }
 
-    // --- SÚLY BEÁLLÍTÁS ---
-    window.adjustWeight = (id, delta, dayIdx) => {
-        if (!savedData[id]) savedData[id] = {};
-        let currentWeight = parseFloat(savedData[id].weight) || 0;
-        let newWeight = Math.max(0, currentWeight + delta);
-        savedData[id].weight = Math.round(newWeight * 10) / 10;
-        saveDataToStorage();
-        renderDay(dayIdx);
-    };
-
-    // --- STOPPER ÉS IDŐÁLLÍTÓ LOGIKA ---
     function updateDisplay() {
         const m = Math.floor(secondsLeft / 60);
         const s = secondsLeft % 60;
@@ -186,6 +188,7 @@ PROFI VÁLASZ: Ha az adott súllyal eléred a felső határt minden sorozatban, 
             if (secondsLeft <= 0) {
                 stopTimer();
                 timerDisplay.innerText = "00:00 - LEJÁRT!";
+                startTimerBtn.innerText = "▶ INDÍTÁS";
             }
         }, 1000);
     }
@@ -209,6 +212,7 @@ PROFI VÁLASZ: Ha az adott súllyal eléred a felső határt minden sorozatban, 
     startTimerBtn.addEventListener("click", () => {
         if (timerInterval) {
             stopTimer();
+            startTimerBtn.innerText = "▶ INDÍTÁS";
         } else {
             startTimer();
         }
@@ -218,17 +222,49 @@ PROFI VÁLASZ: Ha az adott súllyal eléred a felső határt minden sorozatban, 
         stopTimer();
         secondsLeft = parseInt(timerSlider.value, 10);
         updateDisplay();
+        startTimerBtn.innerText = "▶ INDÍTÁS";
     });
 
-    // --- JEGYZET LOGIKA ---
+    // Könyvecske megnyitása (összes exercise listázása: név: ismétlés, kg formátumban)
     notesBtn.addEventListener("click", () => {
-        const savedNotes = localStorage.getItem("friend_workout_notes");
-        notesInput.value = savedNotes !== null ? savedNotes : defaultQA;
         notesModal.style.display = "flex";
+        
+        let containerDiv = document.getElementById("exercise-logs-container");
+        if (!containerDiv) {
+            containerDiv = document.createElement("div");
+            containerDiv.id = "exercise-logs-container";
+            if (notesInput) {
+                notesInput.parentNode.insertBefore(containerDiv, notesInput);
+                notesInput.style.display = "none";
+            }
+        }
+
+        let innerHTML = `<div style="max-height:350px; overflow-y:auto; text-align:left; color:#000;"><h4>🏋️ Gyakorlatok Adatai (Név: Ismétlés, Súly)</h4>`;
+        allExercisesList.forEach(ex => {
+            const data = exerciseLogs[ex.id] || { reps: "", weight: "" };
+            innerHTML += `
+                <div style="margin-bottom:12px; padding:8px; background:#f1f1f1; border-radius:5px;">
+                    <div style="font-weight:bold; margin-bottom:4px;">${ex.name}</div>
+                    <label>Ismétlés: <input type="text" id="ex_r_${ex.id}" value="${data.reps}" style="width:60px; padding:3px;" /></label> &nbsp;
+                    <label>Kg: <input type="number" id="ex_w_${ex.id}" value="${data.weight}" style="width:60px; padding:3px;" /></label>
+                </div>
+            `;
+        });
+        innerHTML += `</div>`;
+        containerDiv.innerHTML = innerHTML;
     });
 
     saveNotesBtn.addEventListener("click", () => {
-        localStorage.setItem("friend_workout_notes", notesInput.value);
+        allExercisesList.forEach(ex => {
+            const rInput = document.getElementById(`ex_r_${ex.id}`);
+            const wInput = document.getElementById(`ex_w_${ex.id}`);
+            if (rInput && wInput) {
+                if (!exerciseLogs[ex.id]) exerciseLogs[ex.id] = {};
+                exerciseLogs[ex.id].reps = rInput.value;
+                exerciseLogs[ex.id].weight = wInput.value;
+            }
+        });
+        localStorage.setItem("friend_exercise_logs", JSON.stringify(exerciseLogs));
         notesModal.style.display = "none";
     });
 
@@ -236,17 +272,16 @@ PROFI VÁLASZ: Ha az adott súllyal eléred a felső határt minden sorozatban, 
         notesModal.style.display = "none";
     });
 
-    // --- KÁRTYA ESEMÉNYEK ---
-    window.toggleDesc = (id) => {
-        const box = document.getElementById(`desc-${id}`);
+    window.toggleDesc = (uniqueId) => {
+        const box = document.getElementById(`desc-${uniqueId}`);
         if (box) box.style.display = box.style.display === "block" ? "none" : "block";
     };
 
-    window.toggleDone = (id, dayIdx) => {
-        if (!savedData[id]) savedData[id] = {};
-        const isNowDone = !savedData[id].done;
-        savedData[id].done = isNowDone;
-        saveDataToStorage();
+    window.toggleDone = (uniqueId, dayIdx) => {
+        if (!savedData[uniqueId]) savedData[uniqueId] = {};
+        const isNowDone = !savedData[uniqueId].done;
+        savedData[uniqueId].done = isNowDone;
+        localStorage.setItem("friend_workout_data", JSON.stringify(savedData));
         
         renderDay(dayIdx);
 
@@ -258,12 +293,12 @@ PROFI VÁLASZ: Ha az adott súllyal eléred a felső határt minden sorozatban, 
     };
 
     prevBtn.addEventListener("click", () => {
-        currentDayIndex = (currentDayIndex - 1 + 7) % 7;
+        currentDayIndex = (currentDayIndex - 1 + totalScheduleDays) % totalScheduleDays;
         renderDay(currentDayIndex);
     });
 
     nextBtn.addEventListener("click", () => {
-        currentDayIndex = (currentDayIndex + 1) % 7;
+        currentDayIndex = (currentDayIndex + 1) % totalScheduleDays;
         renderDay(currentDayIndex);
     });
 
